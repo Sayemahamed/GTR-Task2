@@ -5,6 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "beautifulsoup4>=4.14.2",
     "firecrawl-py>=4.5.0",
+    "langchain-groq>=1.0.0",
+    "langgraph>=1.0.1",
+    "langgraph-cli[inmem]>=0.4.4",
+    "pydantic>=2.12.3",
+    "pydantic-settings>=2.11.0",
     "rich>=14.2.0",
 ]
