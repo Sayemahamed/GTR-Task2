@@ -28,7 +28,7 @@ class Settings(BaseSettings):
         description="Recycle connections after this many seconds (e.g., 30 minutes)",
     )
 
-    GEMINI_API_KEY: str = Field(..., description="API Key for Google Gemini services")
+    GROQ_API_KEY: str = Field(..., description="API Key for Google Gemini services")
 
     model_config = SettingsConfigDict(
         env_file=".env",  

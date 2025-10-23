@@ -1,5 +1,12 @@
 services:
-
+  backend:
+    build:
+      context: ./BackEnd/API
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./BackEnd/API:/API
   postgres:
     image: postgres:18-alpine
     restart: always
