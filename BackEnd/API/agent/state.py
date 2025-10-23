@@ -1,4 +1,4 @@
-from typing import Annotated, TypedDict
+from typing import Annotated, Optional, TypedDict
 
 
 def custom_reducer(left: list[int], right: list[int]) -> list[int]:
@@ -11,3 +11,4 @@ def custom_reducer(left: list[int], right: list[int]) -> list[int]:
 
 class State(TypedDict):
     count: Annotated[list[int], custom_reducer]
+    critic:Optional[str]

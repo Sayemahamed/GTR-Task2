@@ -15,10 +15,15 @@ schema = {
     "required": ["model", "release_date", "display", "battery", "camera", "RAM", "storage", "price"],
 }
 
-res = firecrawl.extract(
-    urls=["https://m.gsmarena.com/samsung_galaxy_a17-14157.php"],
-    prompt="get  model name, release date,display, battery, camera, RAM, storage, and price",
-    schema=schema,
+res = firecrawl.map(
+    url="https://m.gsmarena.com/",
+    search="Samsung Galaxy Tab A11",
+    limit=10
 )
-print(res.data)
+
+# res = firecrawl.extract(
+#     urls=["https://m.gsmarena.com/"],
+#     prompt="get  model name, release date,display, battery, camera, RAM, storage, and price of Samsung Galaxy Tab A11",
+#     schema=schema,
+# )
 print(res)
