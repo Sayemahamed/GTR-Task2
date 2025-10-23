@@ -1,16 +1,15 @@
+from contextlib import asynccontextmanager
+from typing import Any, AsyncGenerator
 
 from API.config import settings
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
-from typing import Any, AsyncGenerator
-from contextlib import asynccontextmanager
-
 
 async_engine: AsyncEngine = create_async_engine(
     url=settings.DATABASE_URL,
-    echo=False,  
+    echo=False,
     pool_size=settings.POOL_SIZE,
     max_overflow=settings.MAX_OVERFLOW,
     pool_timeout=settings.POOL_TIMEOUT,
@@ -26,13 +25,11 @@ async def init_db() -> None:
     """Initializes the database by creating all tables defined by SQLModel models."""
     async with async_engine.begin() as conn:
         try:
-            from API.db.models import (  
-                Device
-            )
+            from API.db.models import Device
 
             await conn.run_sync(SQLModel.metadata.create_all)
         except Exception as e:
-            raise  
+            raise
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, Any]:
@@ -44,7 +41,8 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, Any]:
             await session.rollback()
             raise
         finally:
-            await session.close()  
+            await session.close()
+
 
 @asynccontextmanager
 async def get_agent_session() -> AsyncGenerator[AsyncSession, None]:

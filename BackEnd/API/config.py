@@ -27,9 +27,9 @@ class Settings(BaseSettings):
         1800,
         description="Recycle connections after this many seconds (e.g., 30 minutes)",
     )
-
     GROQ_API_KEY: str = Field(..., description="API Key for Groq services")
     FIRECRAWL_API_KEY: str = Field(..., description="API Key for FireCrawl services")
+    LANGSMITH_API_KEY: str = Field(..., description="API Key for LangSmith services")
 
     model_config = SettingsConfigDict(
         env_file=".env",

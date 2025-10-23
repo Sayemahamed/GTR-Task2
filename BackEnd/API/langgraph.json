@@ -1,0 +1,9 @@
+{
+  "dependencies": [
+    "."
+],
+  "graphs": {
+    "Smart Assistant": "./__init__.py:graph"
+  },
+  "env": ".env"
+}
