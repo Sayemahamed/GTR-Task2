@@ -797,6 +797,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
     { name = "firecrawl-py" },
+    { name = "langchain-core" },
     { name = "langchain-groq" },
     { name = "langgraph" },
     { name = "langgraph-checkpoint-postgres" },
@@ -812,6 +813,7 @@ dependencies = [
 requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = ">=0.119.1" },
     { name = "firecrawl-py", specifier = ">=4.5.0" },
+    { name = "langchain-core", specifier = ">=1.0.0" },
     { name = "langchain-groq", specifier = ">=1.0.0" },
     { name = "langgraph", specifier = ">=1.0.1" },
     { name = "langgraph-checkpoint-postgres", specifier = ">=3.0.0" },

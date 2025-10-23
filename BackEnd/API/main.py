@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-
+from langchain_core.messages import HumanMessage
 from API.agent import graph
 from API.db import init_db
 from API.tools import add_device, query_devices
@@ -32,7 +32,9 @@ api_prefix = f"/{API_VERSION}"
 
 @app.get("/ask")
 async def ask(query: str):
-    return {"response": query}
+    print(query)
+    response   =  await graph.ainvoke(input={"messages": [HumanMessage(content=query)]})
+    return {"response": response}
 
 
 @app.get("/add_device/{model_name}")

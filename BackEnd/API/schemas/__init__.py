@@ -1,1 +1,1 @@
-from .device import DeviceSchema
+from .device import DeviceSchema,DeviceQuerySchema

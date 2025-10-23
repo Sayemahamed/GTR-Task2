@@ -113,6 +113,7 @@ jsonschema-rs==0.29.1
     # via langgraph-api
 langchain-core==1.0.0
     # via
+    #   gtr-task2
     #   langchain-groq
     #   langgraph
     #   langgraph-api

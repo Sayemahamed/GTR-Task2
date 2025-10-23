@@ -30,6 +30,9 @@ async def add_device(model_name: str):
     links = match.group(1)
     print(links)
 
+    if links is None:
+        return "Device not found"
+
     extraction = await asyncio.to_thread(
         firecrawl.extract,
         urls=[links],
@@ -71,9 +74,40 @@ async def query_devices(where_clause: str) -> str:
     - camera_specs (string)
     - price_cents (integer)
 
-    IMPORTANT: String values must be enclosed in single quotes.
-    For example, to find all Samsung phones with more than 8GB of RAM, the
-    `where_clause` would be: "model_name LIKE '%Samsung%' AND ram_gb > 8".
+    --- EXAMPLES ---
+
+    1.  **Simple Text Search (LIKE):**
+        - User Question: "Find all the Google Pixel phones."
+        - `where_clause`: "model_name LIKE '%Google Pixel%'"
+
+    2.  **Numerical Range (AND):**
+        - User Question: "Show me phones that cost between $700 and $900."
+        - `where_clause`: "price_cents >= 70000 AND price_cents <= 90000"
+
+    3.  **Combining Multiple Conditions (AND with different types):**
+        - User Question: "Find iPhones released in 2023 with at least 256GB of storage."
+        - `where_clause`: "model_name LIKE '%iPhone%' AND release_date >= '2023-01-01' AND storage_gb >= 256"
+
+    4.  **Using OR logic:**
+        - User Question: "I want phones with a huge battery (over 5000 mAh) or a lot of RAM (16GB or more)."
+        - `where_clause`: "battery_mah > 5000 OR ram_gb >= 16"
+
+    5.  **Checking for Missing Data (IS NULL):**
+        - User Question: "List all devices where the price has not been announced yet."
+        - `where_clause`: "price_cents IS NULL"
+
+    6.  **Specific Date:**
+        - User Question: "Were any phones released on May 1st, 2024?"
+        - `where_clause`: "release_date = '2024-05-01'"
+
+    7.  **Complex Combination with Parentheses:**
+        - User Question: "Find either Samsung or Google phones that have 12GB of RAM and cost less than $1000."
+        - `where_clause`: "(model_name LIKE '%Samsung S20%' OR model_name LIKE '%Samsung Galaxy A26%') AND ram_gb = 12 AND price_cents < 100000"
+
+    --- IMPORTANT RULES ---
+    - String values MUST be enclosed in single quotes (e.g., 'Samsung').
+    - Dates MUST be in 'YYYY-MM-DD' format and enclosed in single quotes.
+    - Column names are case-sensitive and must match the list above exactly
     """
     if not is_safe_where_clause(where_clause):
         return "Error: Your query contains forbidden or unsafe SQL commands. You can only use SELECT statements with a WHERE clause."
@@ -95,7 +129,7 @@ async def query_devices(where_clause: str) -> str:
             device = device_row._asdict()
             details = (
                 f"- Model: {device['model_name']}, RAM: {device['ram_gb']}GB, "
-                f"Storage: {device['storage_gb']}GB, Price: ${device['price_cents'] / 100:.2f}"
+                f"Storage: {device['storage_gb']}GB, Price: ${device['price_cents'] :.2f}"
             )
             response_lines.append(details)
         return "\n".join(response_lines)
