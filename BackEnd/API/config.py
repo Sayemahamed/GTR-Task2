@@ -28,13 +28,15 @@ class Settings(BaseSettings):
         description="Recycle connections after this many seconds (e.g., 30 minutes)",
     )
 
-    GROQ_API_KEY: str = Field(..., description="API Key for Google Gemini services")
+    GROQ_API_KEY: str = Field(..., description="API Key for Groq services")
+    FIRECRAWL_API_KEY: str = Field(..., description="API Key for FireCrawl services")
 
     model_config = SettingsConfigDict(
-        env_file=".env",  
+        env_file=".env",
         env_file_encoding="utf-8",
-        extra="ignore",  
-        case_sensitive=False,  
+        extra="ignore",
+        case_sensitive=False,
     )
+
 
 settings = Settings()  # type:ignore

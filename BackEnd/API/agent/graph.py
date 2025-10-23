@@ -1,7 +1,7 @@
-from .state import State
-from langgraph.graph import START, END, StateGraph
-from .nodes import Node_1, Node_2, Node_3, Node_4
+from langgraph.graph import END, START, StateGraph
 
+from .nodes import Node_1, Node_2, Node_3, Node_4
+from .state import State
 
 builder = StateGraph(State)
 
