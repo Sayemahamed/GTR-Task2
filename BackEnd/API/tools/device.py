@@ -1,47 +1,58 @@
+import asyncio
+import re
+from urllib.parse import quote_plus
+
 import sqlalchemy as sa
 from API.config import settings
 from API.db import Device, get_agent_session
 from API.schemas import DeviceSchema
+from API.tools.sql_validator import is_safe_where_clause
 from firecrawl import Firecrawl
-from sqlalchemy.exc import OperationalError
-
-from .sql_validator import is_safe_where_clause
+from psycopg import OperationalError
 
 firecrawl = Firecrawl(api_key=settings.FIRECRAWL_API_KEY)
 
 
 async def add_device(model_name: str):
-    """
-    Adds a device to the database using firecrawl.
+    encoded_model_name = quote_plus(model_name)
+    print(encoded_model_name)
 
-    Args:
-        model_name (str): The model name of the device to add.
+    search_url = f"https://www.gsmarena.com/res.php3?sSearch={encoded_model_name}"
+    scrape_result = await asyncio.to_thread(
+        firecrawl.scrape,
+        url=search_url,
+        only_main_content=True,
+    )
+    print(scrape_result.markdown)
+    pattern = r"\((https://www.gsmarena.com/.*?\.php)\)"
+    match = re.search(pattern, scrape_result.markdown)  # type: ignore
 
-    Returns:
-        str: A success message if the device was added successfully, otherwise a failure message.
-    """
-    res = firecrawl.extract(
-        urls=["https://m.gsmarena.com/*"],
-        prompt=f"get  model name, release date,display, battery, camera, RAM, storage, and price of {model_name}",
+    links = match.group(1)
+    print(links)
+
+    extraction = await asyncio.to_thread(
+        firecrawl.extract,
+        urls=[links],
+        prompt=f"Extract the device specifications for {model_name}.",
         schema=DeviceSchema.model_json_schema(),
     )
-    if not res.data:
-        return "No data found"
-    device = Device(
-        model_name=res.data["model_name"],
-        release_date=res.data["release_date"],
-        display=res.data["display"],
-        battery_mah=res.data["battery_mah"],
-        ram_gb=res.data["ram_gb"],
-        storage_gb=res.data["storage_gb"],
-        camera_specs=res.data["camera_specs"],
-        price_cents=res.data["price_cents"],
-    )
-
+    if extraction.data is None:
+        return "Device not found"
+    print(extraction)
     async with get_agent_session() as session:
+        device = Device(
+            battery_mah=extraction.data["battery_mah"],
+            camera_specs=extraction.data["camera_specs"],
+            display=extraction.data["display"],
+            model_name=extraction.data["model_name"],
+            price_cents=extraction.data["price_cents"],
+            ram_gb=extraction.data["ram_gb"],
+            release_date=extraction.data["release_date"],
+            storage_gb=extraction.data["storage_gb"],
+        )
         session.add(device)
         await session.commit()
-        return "Device added successfully"
+    return device
 
 
 async def query_devices(where_clause: str) -> str:
@@ -72,7 +83,8 @@ async def query_devices(where_clause: str) -> str:
     try:
         async with get_agent_session() as session:
             statement = sa.text(full_sql_query)
-            result = await session.exec(statement)
+            print(statement)
+            result = await session.exec(statement)  # type: ignore
             devices = result.all()
 
         if not devices:

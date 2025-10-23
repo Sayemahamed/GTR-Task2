@@ -17,8 +17,6 @@ anyio==4.11.0
     #   watchfiles
 attrs==25.4.0
     # via aiohttp
-beautifulsoup4==4.14.2
-    # via gtr-task2
 blockbuster==1.5.25
     # via langgraph-runtime-inmem
 certifi==2025.10.5
@@ -210,7 +208,11 @@ protobuf==6.33.0
     #   langgraph-api
     #   opentelemetry-proto
 psycopg==3.2.11
-    # via langgraph-checkpoint-postgres
+    # via
+    #   gtr-task2
+    #   langgraph-checkpoint-postgres
+psycopg-binary==3.2.11 ; implementation_name != 'pypy'
+    # via psycopg
 psycopg-pool==3.2.6
     # via langgraph-checkpoint-postgres
 pycparser==2.23 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
@@ -276,8 +278,6 @@ sniffio==1.3.1
     # via
     #   anyio
     #   groq
-soupsieve==2.8
-    # via beautifulsoup4
 sqlalchemy==2.0.44
     # via sqlmodel
 sqlmodel==0.0.27
@@ -310,7 +310,6 @@ typing-extensions==4.15.0
     # via
     #   aiosignal
     #   anyio
-    #   beautifulsoup4
     #   fastapi
     #   groq
     #   grpcio
