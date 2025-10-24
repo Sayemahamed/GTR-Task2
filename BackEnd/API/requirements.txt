@@ -217,6 +217,8 @@ psycopg-binary==3.2.11 ; implementation_name != 'pypy'
     # via psycopg
 psycopg-pool==3.2.6
     # via langgraph-checkpoint-postgres
+psycopg2==2.9.11
+    # via gtr-task2
 pycparser==2.23 ; implementation_name != 'PyPy' and platform_python_implementation != 'PyPy'
     # via cffi
 pydantic==2.12.3

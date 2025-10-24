@@ -1,8 +1,2 @@
-Compare Galaxy S23 Ultra and S22 Ultra for photography
-Which Samsung phone has the best battery under $1000?
 Samsung Galaxy Z Flip7
-model_name LIKE '%Ultra%'
-price_cents < 100000
-display LIKE '%AMOLED%'
 ram_gb = 12
-storage_gb = 256
