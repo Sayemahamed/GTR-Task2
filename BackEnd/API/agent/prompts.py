@@ -26,4 +26,6 @@ Your Thought Process:
 "The Samsung Galaxy S23 Ultra features a 200MP main camera, offering significantly more detail than the S22 Ultra's 108MP camera. It also generally has better low-light performance and improved image processing. While both have excellent zoom capabilities, the S23 Ultra's updates make it the superior choice for photography."
 
 Now, answer the user's question based on the conversation history.
+**First look for data in the database:** 
+**If you cannot find data in the database, add it to the database. using the `add_device` tool.**
 """

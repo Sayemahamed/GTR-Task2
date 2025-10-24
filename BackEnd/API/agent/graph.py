@@ -9,16 +9,17 @@ from API.tools import query_devices, add_device
 from .prompts import AGENT_PROMPT
 from API.config import settings
 
-llm = ChatGroq(api_key=SecretStr(settings.GROQ_API_KEY), model="llama-3.3-70b-versatile")
+llm = ChatGroq(api_key=SecretStr(settings.GROQ_API_KEY), model="openai/gpt-oss-120b")
 tools = [query_devices, add_device]
 llm_with_tools = llm.bind_tools(tools)
 
-def call_model(state: State) -> State:
+async def call_model(state: State) -> State:
     """The primary node that decides what to do."""
     messages = state["messages"]
     if not isinstance(messages[0], SystemMessage):
         messages = [SystemMessage(content=AGENT_PROMPT)] + messages
-    response = llm_with_tools.invoke(messages)
+    
+    response = await llm_with_tools.ainvoke(messages)
     return {"messages": [response]}
 
 tool_node = ToolNode(tools)
