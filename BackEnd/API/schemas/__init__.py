@@ -1,1 +1,1 @@
-from .device import DeviceSchema,DeviceQuerySchema
+from .device import DeviceSchema,DeviceQuerySchema,AskRequest

@@ -46,3 +46,5 @@ class DeviceQuerySchema(BaseModel):
             "Example: \"ram_gb >= 8 AND release_date > '2023-01-01'\""
         ),
     )
+class AskRequest(BaseModel):
+    question: str

@@ -14,6 +14,15 @@ firecrawl = Firecrawl(api_key=settings.FIRECRAWL_API_KEY)
 
 
 async def add_device(model_name: str):
+    """
+    Asynchronously adds a device to the database.
+
+    Args:
+        model_name (str): The model name of the device to be added.
+
+    Returns:
+        Device: The added device, or "Device not found" if the device is not found.
+    """
     encoded_model_name = quote_plus(model_name)
     print(encoded_model_name)
 

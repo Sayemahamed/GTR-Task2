@@ -152,6 +152,7 @@ langgraph-sdk==0.2.9
     #   langgraph-cli
 langsmith==0.4.37
     # via
+    #   gtr-task2
     #   langchain-core
     #   langgraph-api
 markdown-it-py==4.0.0

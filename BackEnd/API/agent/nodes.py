@@ -24,4 +24,3 @@
 # def DataManager(state: State) -> State:
 #     response: AIMessage=llm_with_tools.invoke(input=[SystemMessage(content=DATA_MANAGER_PROMPT)]+state["messages"])
 #     return {"messages":[response]}
-

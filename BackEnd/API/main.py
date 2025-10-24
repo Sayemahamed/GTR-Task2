@@ -1,11 +1,10 @@
 from contextlib import asynccontextmanager
 from langchain_core.messages import HumanMessage
-from API.agent import graph
+from API.agent import graph  
 from API.db import init_db
 from API.tools import add_device, query_devices
-
-# from API.db import
-from fastapi import FastAPI
+from API.schemas import AskRequest
+from fastapi import FastAPI, Body
 from rich import print
 
 
@@ -13,41 +12,55 @@ from rich import print
 async def lifespan(app: FastAPI):
     print("Application is starting...")
     await init_db()
+    print("Database initialized.")
     yield
     print("Application is shutting down...")
 
 
 API_VERSION = "v1"
 
-
 app = FastAPI(
     lifespan=lifespan,
-    title="Smart Assistant",
+    title="Samsung Phone Advisor",
     version=API_VERSION,
-    description="Smart Assistant API",
+    description="A smart assistant for Samsung phone recommendations, powered by LangGraph.",
 )
 
-api_prefix = f"/{API_VERSION}"
+api_prefix = f"/api/{API_VERSION}"
 
 
-@app.get("/ask")
-async def ask(query: str):
-    print(query)
-    response   =  await graph.ainvoke(input={"messages": [HumanMessage(content=query)]})
-    return {"response": response}
 
+@app.post(f"{api_prefix}/ask", tags=["Assistant"])
+async def ask(payload: AskRequest = Body(...)):
+    """
+    Receives a natural language question and returns a synthesized answer.
+    """
+    query = payload.question
+    print(f"Received query: {query}")
 
-@app.get("/add_device/{model_name}")
+    inputs = {"messages": [HumanMessage(content=query)]}
+    
+    response_content = ""
+    async for event in graph.astream(inputs):
+        if "agent" in event:
+            response_messages = event["agent"].get("messages", [])
+            if response_messages:
+                last_message = response_messages[-1]
+                if not last_message.tool_calls:
+                    response_content = last_message.content
+
+    return {"answer": response_content}
+
+@app.post(f"{api_prefix}/add_device/{{model_name}}", tags=["Admin"])
 async def add_device_route(model_name: str):
     return await add_device(model_name=model_name)
 
 
-@app.get("/query_devices")
+@app.get(f"{api_prefix}/query_devices", tags=["Admin"])
 async def query_devices_route(where_clause: str):
-    print(where_clause)
-    return await query_devices(where_clause)
+    return await query_devices(where_clause=where_clause)
 
 
 @app.get("/", tags=["Root"])
 async def read_root():
-    return {"message": f"Welcome to Price Pilot API {API_VERSION}"}
+    return {"message": f"Welcome to the Samsung Phone Advisor API {API_VERSION}"}
